@@ -679,11 +679,17 @@ Bitmap.prototype.drawSmallText = function(text, x, y, maxWidth, lineHeight, alig
     bitmap.outlineWidth = this.outlineWidth * minFontSize / this.fontSize;
     maxWidth = maxWidth || 816;
     var scaledMaxWidth = maxWidth * minFontSize / this.fontSize;
-    if (scaledMaxWidth > bitmap.width) {
-        bitmap.width *= 2;
-    }
-    bitmap.drawText(text, 0, 0, scaledMaxWidth, minFontSize, align);
-    this.blt(bitmap, 0, 0, scaledMaxWidth, minFontSize, x, y + (lineHeight - this.fontSize) / 2, maxWidth, this.fontSize);
+    var scaledMaxWidthWithOutline = scaledMaxWidth + bitmap.outlineWidth * 2;
+    var scaledLineHeight = lineHeight * minFontSize / this.fontSize;
+
+    var bitmapWidth = bitmap.width;
+    var bitmapHeight = bitmap.height;
+    while (scaledMaxWidthWithOutline > bitmapWidth) bitmapWidth *= 2;
+    while (scaledLineHeight > bitmapHeight) bitmapHeight *= 2;
+    if (bitmap.width !== bitmapWidth || bitmap.height !== bitmapHeight) bitmap.resize(bitmapWidth, bitmapHeight);
+
+    bitmap.drawText(text, bitmap.outlineWidth, 0, scaledMaxWidth, scaledLineHeight, align);
+    this.blt(bitmap, 0, 0, scaledMaxWidthWithOutline, scaledLineHeight, x - this.outlineWidth, y / 2, maxWidth + this.outlineWidth * 2, lineHeight);
     bitmap.clear();
 };
 
