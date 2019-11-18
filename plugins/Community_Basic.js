@@ -254,7 +254,7 @@
     SceneManager.initNwjs = function() {
         _SceneManager_initNwjs.apply(this, arguments);
 
-        if (Utils.isNwjs() && windowWidth && windowHeight) {
+        if (Utils.isNwjs() && (windowWidth || windowHeight)) {
             var dw = windowWidth - window.innerWidth;
             var dh = windowHeight - window.innerHeight;
             window.moveBy(-dw / 2, -dh / 2);
