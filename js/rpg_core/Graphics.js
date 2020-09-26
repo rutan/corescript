@@ -1104,25 +1104,16 @@ Graphics._paintUpperCanvas = function() {
  */
 Graphics._createRenderer = function() {
     PIXI.dontSayHello = true;
-    var width = this._width;
-    var height = this._height;
-    var options = { view: this._canvas };
     try {
-        switch (this._rendererType) {
-        case 'canvas':
-            this._renderer = new PIXI.CanvasRenderer(width, height, options);
-            break;
-        case 'webgl':
-            this._renderer = new PIXI.WebGLRenderer(width, height, options);
-            break;
-        default:
-            this._renderer = PIXI.autoDetectRenderer(width, height, options);
-            break;
-        }
+        this._renderer = new PIXI.Renderer({
+            width: this._width,
+            height: this._height,
+            view: this._canvas
+        });
 
-        if(this._renderer && this._renderer.textureGC)
+        if (this._renderer && this._renderer.textureGC) {
             this._renderer.textureGC.maxIdle = 1;
-
+        }
     } catch (e) {
         this._renderer = null;
     }
@@ -1439,7 +1430,7 @@ Graphics._switchFullScreen = function() {
  */
 Graphics._isFullScreen = function() {
     return document.fullscreenElement ||
-           document.mozFullScreen || 
+           document.mozFullScreen ||
            document.webkitFullscreenElement ||
            document.msFullscreenElement;
 };
@@ -1468,7 +1459,7 @@ Graphics._requestFullScreen = function() {
  * @private
  */
 Graphics._cancelFullScreen = function() {
-    if (document.exitFullscreen) { 
+    if (document.exitFullscreen) {
         document.exitFullscreen();
     } else if (document.mozCancelFullScreen) {
         document.mozCancelFullScreen();
