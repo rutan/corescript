@@ -397,24 +397,6 @@ Sprite.prototype._renderCanvas_PIXI = PIXI.Sprite.prototype._renderCanvas;
 Sprite.prototype._renderWebGL_PIXI = PIXI.Sprite.prototype._render;
 
 /**
- * @method _renderCanvas
- * @param {Object} renderer
- * @private
- */
-Sprite.prototype._renderCanvas = function(renderer) {
-    if (this.bitmap) {
-        this.bitmap.touch();
-    }
-    if(this.bitmap && !this.bitmap.isReady()){
-        return;
-    }
-
-    if (this.texture.frame.width > 0 && this.texture.frame.height > 0) {
-        this._renderCanvas_PIXI(renderer);
-    }
-};
-
-/**
  * @method _render
  * @param {Object} renderer
  * @private
@@ -434,9 +416,13 @@ Sprite.prototype._render = function(renderer) {
         //copy of pixi-v4 internal code
         this.calculateVertices();
 
-        // use pixi super-speed renderer
-        renderer.batch.setObjectRenderer(renderer.plugins[this.pluginName]);
-        renderer.plugins[this.pluginName].render(this);
+        if (this._isPicture) {
+            PIXI.picture.Sprite.prototype._render.apply(this, arguments);
+        } else {
+            // use pixi super-speed renderer
+            renderer.batch.setObjectRenderer(renderer.plugins[this.pluginName]);
+            renderer.plugins[this.pluginName].render(this);
+        }
     }
 };
 
